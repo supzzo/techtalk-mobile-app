@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:intl/intl.dart';
-import 'package:transparent_image/transparent_image.dart';
 
+import 'package:techtalk_mobile_app/components/post_item.dart';
 import 'package:techtalk_mobile_app/features/home/home_contract.dart';
 import 'package:techtalk_mobile_app/features/home/home_presenter.dart';
-import 'package:techtalk_mobile_app/features/post/post_view.dart';
 import 'package:techtalk_mobile_app/model/category.dart';
 import 'package:techtalk_mobile_app/model/post.dart';
 
@@ -21,7 +19,10 @@ class HomeView extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: Text('TechTalk'),
+          title: Text(
+            'Bài viết mới',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.search),
@@ -62,13 +63,19 @@ class PostList extends StatefulWidget {
 
 class _PostListState extends State<PostList>
     with HomeContract, AutomaticKeepAliveClientMixin {
+  ScrollController _controller;
+
   HomePresenter _presenter;
+
+  int _page = 1;
 
   bool _isLoading = true;
 
   List<Post> _posts = <Post>[];
 
   _PostListState() {
+    _controller = ScrollController();
+
     _presenter = HomePresenter(this);
   }
 
@@ -76,14 +83,23 @@ class _PostListState extends State<PostList>
   void initState() {
     super.initState();
 
-    _presenter.loadPosts(widget.category.id);
+    _controller.addListener(() {
+      double maxScroll = _controller.position.maxScrollExtent;
+      double currentScroll = _controller.position.pixels;
+      double delta = 200.0;
+      if (maxScroll - currentScroll <= delta) {
+        _presenter.loadPosts(widget.category.id, ++_page);
+      }
+    });
+
+    _presenter.loadPosts(widget.category.id, _page);
   }
 
   @override
   void onSuccess(List<Post> posts) {
     setState(() {
       _isLoading = false;
-      _posts = posts;
+      _posts.addAll(posts);
     });
   }
 
@@ -95,10 +111,18 @@ class _PostListState extends State<PostList>
   }
 
   @override
+  void dispose() {
+    super.dispose();
+
+    _controller.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return _isLoading
         ? CupertinoActivityIndicator()
         : ListView.builder(
+            controller: _controller,
             itemCount: _posts.length,
             itemBuilder: (_, int index) {
               return Column(
@@ -120,102 +144,4 @@ class _PostListState extends State<PostList>
 
   @override
   bool get wantKeepAlive => true;
-}
-
-class PostItem extends StatelessWidget {
-  final Post post;
-  final Category category;
-
-  PostItem({
-    this.post,
-    this.category,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      child: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        post.title,
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context)
-                            .textTheme
-                            .title
-                            .copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 4.0),
-                      Text(
-                        post.excerpt,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.subhead.copyWith(
-                            color: Theme.of(context).textTheme.caption.color),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(width: 8.0),
-                Stack(
-                  alignment: Alignment.center,
-                  children: <Widget>[
-                    CupertinoActivityIndicator(),
-                    FadeInImage.memoryNetwork(
-                      placeholder: kTransparentImage,
-                      image: post.thumbUrl,
-                      width: 90.0,
-                      height: 90.0,
-                      fit: BoxFit.cover,
-                    ),
-                  ],
-                )
-              ],
-            ),
-            SizedBox(height: 16.0),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(post.author),
-                      Text(
-                        DateFormat.yMMMd('vi').format(post.date),
-                        style: TextStyle(
-                          color: Theme.of(context).textTheme.caption.color,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.bookmark_border),
-                  onPressed: () {},
-                )
-              ],
-            ),
-          ],
-        ),
-      ),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => PostView(post: post, category: category),
-          ),
-        );
-      },
-    );
-  }
 }

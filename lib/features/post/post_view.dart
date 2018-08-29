@@ -60,7 +60,10 @@ class _PostViewState extends State<PostView> with PostContract {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(widget.category.name),
+        title: Text(
+          widget.category.name,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.bookmark_border),
@@ -74,46 +77,52 @@ class _PostViewState extends State<PostView> with PostContract {
             )
           : ListView(
               children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        _post.title,
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline
-                            .copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 8.0),
-                      DefaultTextStyle(
-                        style: Theme.of(context).textTheme.body1.copyWith(
-                              color: Theme.of(context).textTheme.caption.color,
+                Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            _post.title,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline
+                                .copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 8.0),
+                          DefaultTextStyle(
+                            style: Theme.of(context).textTheme.body1.copyWith(
+                                  color:
+                                      Theme.of(context).textTheme.caption.color,
+                                ),
+                            child: Row(
+                              children: <Widget>[
+                                Text(_post.author),
+                                SizedBox(width: 4.0),
+                                Text('•'),
+                                SizedBox(width: 4.0),
+                                Text(
+                                  DateFormat.yMMMd('vi').format(_post.date),
+                                ),
+                              ],
                             ),
-                        child: Row(
-                          children: <Widget>[
-                            Text(_post.author),
-                            SizedBox(width: 4.0),
-                            Text('•'),
-                            SizedBox(width: 4.0),
-                            Text(
-                              DateFormat.yMMMd('vi').format(_post.date),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-                FadeInImage.memoryNetwork(
-                  placeholder: kTransparentImage,
-                  image: _post.thumbUrl,
-                  height: 200.0,
-                  fit: BoxFit.cover,
-                ),
-                Html(
-                  padding: EdgeInsets.all(16.0),
-                  data: _post.content,
+                    ),
+                    FadeInImage.memoryNetwork(
+                      placeholder: kTransparentImage,
+                      image: _post.thumbUrl,
+                      height: 200.0,
+                      fit: BoxFit.cover,
+                    ),
+                    Html(
+                      padding: EdgeInsets.all(16.0),
+                      data: _post.content,
+                    ),
+                  ],
                 ),
               ],
             ),

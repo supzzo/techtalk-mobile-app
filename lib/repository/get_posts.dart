@@ -11,9 +11,9 @@ class GetPostsRepository implements GetPostsRepositoryContract {
   static const url = 'https://techtalk.vn/wp-json/wp/v2/posts';
 
   @override
-  Future<List<Post>> fetchPosts(int categoryId) async {
-    final http.Response _response =
-        await http.get('$url?categories=$categoryId&_embed');
+  Future<List<Post>> fetchByCategories({List<int> categories, int page}) async {
+    final http.Response _response = await http
+        .get('$url?categories=${categories.join(',')}&page=$page&_embed');
 
     if (_response.statusCode != 200) {
       throw FetchDataException('Không lấy được danh sách bài viết.');

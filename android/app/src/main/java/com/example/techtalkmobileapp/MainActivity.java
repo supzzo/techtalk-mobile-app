@@ -1,4 +1,4 @@
-package com.example.techtalkmobileapp;
+package me.toandev.techtalk;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

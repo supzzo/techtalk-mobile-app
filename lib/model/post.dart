@@ -12,6 +12,7 @@ class Post {
   String thumbUrl;
   DateTime date;
   String author;
+  List<int> tags;
 
   Post({
     this.id,
@@ -24,6 +25,7 @@ class Post {
     this.thumbUrl,
     this.date,
     this.author,
+    this.tags,
   });
 
   static Post fromMap(Map<String, dynamic> map) {
@@ -35,6 +37,8 @@ class Post {
         .text
         .trim();
     final String _content = map['content']['rendered'];
+    final List<int> _tags =
+        (map['tags'] as List).map((tag) => int.parse(tag.toString())).toList();
 
     return Post(
       id: map['id'],
@@ -47,6 +51,7 @@ class Post {
       thumbUrl: map['_embedded']['wp:featuredmedia'][0]['source_url'],
       date: DateTime.parse(map['date']) ?? DateTime.now(),
       author: map['_embedded']['author'][0]['name'],
+      tags: _tags,
     );
   }
 }

@@ -12,11 +12,12 @@ class HomePresenter {
     _repository = Injector().postRepository;
   }
 
-  void loadPosts(int categoryId) async {
+  void loadPosts(int categoryId, int page) async {
     assert(_view != null);
 
     try {
-      List<Post> _posts = await _repository.fetchPosts(categoryId);
+      List<Post> _posts = await _repository
+          .fetchByCategories(categories: [categoryId], page: page);
 
       _view.onSuccess(_posts);
     } catch (error) {

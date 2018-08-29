@@ -14,6 +14,7 @@ class TechTalk extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'TechTalk',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Colors.black,
         fontFamily: 'Roboto Slab',

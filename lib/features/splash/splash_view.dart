@@ -41,6 +41,7 @@ class _SplashViewState extends State<SplashView> implements SplashContract {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.black,
         body: Center(
           child: Image.asset(
             'images/logo.png',
