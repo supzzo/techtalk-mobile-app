@@ -1,0 +1,34 @@
+name: techtalk_mobile_app
+description: A new Flutter project.
+
+version: 0.0.1+1
+
+environment:
+  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^0.1.2
+  http: ^0.11.3+17
+  html_unescape: ^1.0.1+2
+  transparent_image: ^0.1.0
+  html: any
+  intl: ^0.15.7
+  flutter_html: any
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - images/logo.png
+
+  fonts:
+    - family: Roboto Slab
+      fonts:
+        - asset: fonts/RobotoSlab-Regular.ttf
+        - asset: fonts/RobotoSlab-Light.ttf
+          weight: 300
+        - asset: fonts/RobotoSlab-Bold.ttf
+          weight: 700
